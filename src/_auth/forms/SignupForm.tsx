@@ -12,6 +12,9 @@ import { Input } from '@/components/ui/input';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { SignupValidation } from '@/lib/validation';
+import Loader from '@/components/ui/shared/Loader';
+import { Link } from 'react-router-dom';
+import { createUserAccount } from '@/lib/appwrite/api';
 
 const SignupForm = () => {
 	const isLoading = false;
@@ -27,15 +30,15 @@ const SignupForm = () => {
 		},
 	});
 	// 2. Define a submit handler.
-	function onSubmit(values: z.infer<typeof SignupValidation>) {
-		// Do something with the form values.
-		// ✅ This will be type-safe and validated.
-		console.log(values);
+	async function onSubmit(values: z.infer<typeof SignupValidation>) {
+		const newUser = await createUserAccount(values);
+			console.log(newUser)
+	
 	}
 
 	return (
 		<Form {...form}>
-			<div className=' flex-center flex-col pb-3 px-3 mt-8'>
+			<div className=' flex-center flex-col  px-3 mt-8'>
 				<a href='/'>
 					<img
 						src='/images/logo-white.svg'
@@ -45,7 +48,7 @@ const SignupForm = () => {
 				</a>
 				<h2 className='h3-bold md:h2-bold xl:h1-bold'> Create New Account</h2>
 				<p className='text-gray-200/90 small-medium md:base-regular mt-1'>
-					To use NetworkNest enter your account details
+					To use NetworkNest, Please enter your details!
 				</p>
 			</div>
 			<div className='sm:w-96 w-full md:w-420 p-3'>
@@ -104,13 +107,24 @@ const SignupForm = () => {
 							</FormItem>
 						)}
 					/>
-					<Button type='submit' className='shad-button_primary mt-3'>
+					<Button type='submit' className='shad-button_primary mt-3 pb-2'>
 						{isLoading ? (
-						<div className='flex flex-center gap-2'>
-							<img src='/images/loader.gif' className='w-5'/>Loading...
-						</div>
-						): 'Sign up'}
+							<div className='flex flex-center gap-2'>
+								<Loader /> Loading...
+							</div>
+						) : (
+							'Sign up'
+						)}
 					</Button>
+
+					<p className='text-small-regular text-gray-200/90 text-center mt-2'>
+						Already have an account?
+						<Link
+							to='/sign-in'
+							className='text-orange-500 font-semibold ml-1 underline'>
+							Log in
+						</Link>
+					</p>
 				</form>
 			</div>
 		</Form>
